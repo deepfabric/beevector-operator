@@ -1,0 +1,7 @@
+1. Make sure hyena-operator components are running
+   kubectl get pods --namespace {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }}
+2. Install CRD
+   kubectl apply -f https://raw.githubusercontent.com/infinivision/hyena-operator/master/manifests/crd.yaml
+   kubectl get customresourcedefinitions
+3. Modify hyena-cluster/values.yaml and create a Hyena cluster by installing hyena-cluster charts
+   helm install hyena-cluster

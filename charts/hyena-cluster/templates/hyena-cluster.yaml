@@ -1,0 +1,54 @@
+apiVersion: infinivision.com/v1alpha1
+kind: HyenaCluster
+metadata:
+  name: {{ .Values.clusterName }}
+  labels:
+    app.kubernetes.io/name: {{ template "chart.name" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: hyena-cluster
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+"  "_" }}
+spec:
+  pvReclaimPolicy: {{ .Values.pvReclaimPolicy }}
+  timezone: {{ .Values.timezone | default "UTC" }}
+  services:
+{{ toYaml .Values.services | indent 4 }}
+  schedulerName: {{ .Values.schedulerName | default "default-scheduler" }}
+  prophet:
+    replicas: {{ .Values.prophet.replicas }}
+    image: {{ .Values.prophet.image }}
+    imagePullPolicy: {{ .Values.prophet.imagePullPolicy | default "IfNotPresent" }}
+  {{- if .Values.prophet.storageClassName }}
+    storageClassName: {{ .Values.prophet.storageClassName }}
+  {{- end }}
+  {{- if .Values.prophet.resources }}
+{{ toYaml .Values.prophet.resources | indent 4 }}
+  {{- end }}
+  {{- if .Values.prophet.nodeSelector }}
+    nodeSelector:
+{{ toYaml .Values.prophet.nodeSelector | indent 6 }}
+  {{- end }}
+    nodeSelectorRequired: {{ .Values.nodeSelectorRequired | default true }}
+  {{- if .Values.prophet.tolerations }}
+    tolerations:
+{{ toYaml .Values.prophet.tolerations | indent 4 }}
+  {{- end }}
+  store:
+    replicas: {{ .Values.store.replicas }}
+    image: {{ .Values.store.image }}
+    imagePullPolicy: {{ .Values.store.imagePullPolicy | default "IfNotPresent" }}
+  {{- if .Values.store.storageClassName }}
+    storageClassName: {{ .Values.store.storageClassName }}
+  {{- end }}
+  {{- if .Values.store.resources }}
+{{ toYaml .Values.store.resources | indent 4 }}
+  {{- end }}
+  {{- if .Values.store.nodeSelector }}
+    nodeSelector:
+{{ toYaml .Values.store.nodeSelector | indent 6 }}
+  {{- end }}
+    nodeSelectorRequired: {{ .Values.nodeSelectorRequired | default true }}
+  {{- if .Values.store.tolerations }}
+    tolerations:
+{{ toYaml .Values.store.tolerations | indent 4 }}
+  {{- end }}

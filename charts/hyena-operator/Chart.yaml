@@ -1,0 +1,11 @@
+apiVersion: v1
+description: hyena-operator Helm chart for Kubernetes
+name: hyena-operator
+version: 0.1.0
+home: https://github.com/infinivision/hyena-operator
+sources:
+  - https://github.com/infinivision/hyena-operator
+keywords:
+  - operator
+  - redis
+  - raft

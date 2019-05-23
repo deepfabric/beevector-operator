@@ -1,0 +1,104 @@
+# Default values for hyena-cluster.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+rbac:
+  create: true
+
+# clusterName is the Hyena cluster name, it is required and should be unique
+# if multiple clusters are deployed in the same namespace.
+clusterName: demo
+
+# schedulerName must be same with charts/hyena-operator/values#scheduler.schedulerName
+#schedulerName: hyena-scheduler
+
+# timezone is the default system timzone for Hyena
+timezone: UTC
+
+# default reclaim policy of a PV
+pvReclaimPolicy: Retain
+
+# services is the service list to expose, default is ClusterIP
+# can be ClusterIP | NodePort | LoadBalancer
+services:
+  - name: prophet
+    type: ClusterIP
+
+prophet:
+  replicas: 3
+  image: infinivision/hyena:latest
+  logLevel: info
+  # storageClassName is a StorageClass provides a way for administrators to describe the "classes" of storage they offer.
+  # different classes might map to quality-of-service levels, or to backup policies,
+  # or to arbitrary policies determined by the cluster administrators.
+  # refer to https://kubernetes.io/docs/concepts/storage/storage-classes
+  storageClassName: local-storage
+
+  # Image pull policy.
+  imagePullPolicy: Always
+
+  # maxStoreDownTime is how long a store will be considered `down` when disconnected
+  # if a store is considered `down`, the regions will be migrated to other stores
+  maxStoreDownTime: 1h
+  # maxReplicas is the number of replicas for each region
+  #maxReplicas: 3
+  resources:
+    limits: {}
+    #   cpu: 8000m
+    #   memory: 8Gi
+    requests:
+      # cpu: 4000m
+      # memory: 4Gi
+      storage: 1Gi
+  # nodeSelector is used for scheduling pod,
+  # if nodeSelectorRequired is true, all the following labels must be matched
+  nodeSelector: {}
+    # kind: hyena
+    # # zone is comma separated availability zone list
+    # # region is comma separated region list
+  # Tolerations are applied to pods, and allow pods to schedule onto nodes with matching taints.
+  # refer to https://kubernetes.io/docs/concepts/configuration/taint-and-toleration
+  tolerations: []
+
+store:
+  replicas: 3
+  image: infinivision/hyena:latest
+  logLevel: info
+  # storageClassName is a StorageClass provides a way for administrators to describe the "classes" of storage they offer.
+  # different classes might map to quality-of-service levels, or to backup policies,
+  # or to arbitrary policies determined by the cluster administrators.
+  # refer to https://kubernetes.io/docs/concepts/storage/storage-classes
+  storageClassName: local-storage
+
+  # Image pull policy.
+  imagePullPolicy: Always
+
+  # maxStoreDownTime is how long a store will be considered `down` when disconnected
+  # if a store is considered `down`, the regions will be migrated to other stores
+  maxStoreDownTime: 1h
+  # maxReplicas is the number of replicas for each region
+  #maxReplicas: 3
+  resources:
+    limits: {}
+    #   cpu: 8000m
+    #   memory: 8Gi
+    requests:
+      # cpu: 4000m
+      # memory: 4Gi
+      storage: 1Gi
+  # nodeSelector is used for scheduling pod,
+  # if nodeSelectorRequired is true, all the following labels must be matched
+  nodeSelector: {}
+    # kind: hyena
+    # # zone is comma separated availability zone list
+    # # region is comma separated region list
+  # Tolerations are applied to pods, and allow pods to schedule onto nodes with matching taints.
+  # refer to https://kubernetes.io/docs/concepts/configuration/taint-and-toleration
+  tolerations: []
+  service:
+    type: ClusterIP
+    exposeStatus: true
+
+metaInstance: "{{ $labels.instance }}"
+metaType: "{{ $labels.type }}"
+metaValue: "{{ $value }}"

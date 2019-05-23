@@ -1,0 +1,9 @@
+Cluster Startup
+1. Watch hyena-cluster up and running
+     watch kubectl get pods --namespace {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }} -o wide
+2. List services in the hyena-cluster
+     kubectl get services --namespace {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }}
+
+Cluster access
+* Access hyena-cluster using the redis client
+    kubectl port-forward -n {{ .Release.Namespace }} svc/{{ .Values.clusterName }}-hyena 9527:9527 &
